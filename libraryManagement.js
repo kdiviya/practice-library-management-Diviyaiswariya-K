@@ -57,8 +57,8 @@ class DVD extends LibraryItem{
         this.copy = copy;
     } 
 
-    //This method is used to display the checkout DVD item and the number of copies and illustrates the concept of polymorphism(same method name in base class).
-   checkOut(dvdName,dvdId){
+//This method is used to display the checkout DVD item and the number of copies and illustrates the concept of polymorphism(same method name in base class).
+   checkOut(dvdName){
 //It will decrease the number of copies if the DVD is checked out based on the isAvailable, isCopy, copy.
         if (this.isAvailable){ 
 
@@ -127,11 +127,11 @@ console.log(`${books.checkBookAvailability("Pette the  Cat")}`);
 console.log(dvds1);
 console.log(dvds2);
 
-console.log(`${dvds2.checkOut("Harry Potter", 103)}`);
-console.log(`${dvds2.returnDVD("Harry Potter",103)}`);
-console.log(`${dvds2.checkOut("Harry Potter", 103)}`);
-console.log(`${dvds2.checkOut("Harry Potter", 103)}`);
-console.log(`${dvds2.checkOut("Harry Potter", 103)}`);
+console.log(`${dvds2.checkOut("Harry Potter")}`);
+console.log(`${dvds2.returnDVD("Harry Potter")}`);
+console.log(`${dvds2.checkOut("Harry Potter")}`);
+console.log(`${dvds2.checkOut("Harry Potter")}`);
+console.log(`${dvds2.checkOut("Harry Potter")}`);
 console.log(dvds2);
 
 //Magazine class object "magazines" calling the baseclass method checkOut and returnItem and child class unique method checkRating.
