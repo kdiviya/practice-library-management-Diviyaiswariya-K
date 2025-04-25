@@ -9,8 +9,13 @@ class LibraryItem{
 
     //This method is used to display the checkout details of books/dvds/magazines based on the title and id. It is reused for the corresponding child class's object.
     checkOut(itemTitle, itemId) {
-        this.isAvailable = false;
+        if (!this.isAvailable){
+            return(`The ${itemTitle} is not avaialble`);
+        }
+        else{
+           this.isAvailable = false;
         return (`Item Checkout details:\n\tTitle - ${itemTitle}\n\tId - ${itemId}`);
+        }
     }
 
 //This method is used to display the returned details of books/dvds/magazines based on the title and id. It is reused for the corresponding child class's object.
@@ -48,13 +53,45 @@ class DVD extends LibraryItem{
         super(title, id, isAvailable);
         this.director = director;
         this.duration = duration;
+        this.isCopy = true;
         this.copy = copy;
     } 
 
-    //This methods is used to display the number of copies for the DVD  and it is unique to the class DVD.
-    checkDvdCopies(dvdName){
-        return `The ${dvdName} has ${this.copy} copies`;
-    }    
+    //This method is used to display the checkout DVD item and the number of copies and illustrates the concept of polymorphism(same method name in base class).
+   checkOut(dvdName,dvdId){
+//It will decrease the number of copies if the DVD is checked out based on the isAvailable, isCopy, copy.
+        if (this.isAvailable){ 
+
+            if(this.isCopy && this.copy >= 1){
+                this.copy -= 1;
+
+                if(this.copy === 0){ // if copy equals 0, the user cannot do the checkout so isAvailable and isCopy is false.
+                    this.isAvailable = false;
+                    this.isCopy = false;
+                }
+
+                else { //if copy is not equal to 0 , the user can still checkout the DVD and still isAvailable and isCopy is true.
+                this.isAvailable = true;
+                this.isCopy =true;
+                }  
+
+                return `The DVD ${this.title} is checked out and the remaining copy/ies ${this.copy}.`;                
+            }
+        }
+
+        else { // If isAvailable is false, then this message will be dispalyed.
+            return `The DVD ${this.title} is not available.`;
+        }
+       
+    }
+
+//This is the unique method for the DVD class for display the return items and the available copies in the library.
+    returnDVD() {
+            this.copy  += 1; //increment the copy if the user returned the DVD
+            this.isCopy =  true;
+            this.isAvailable = true;
+            return `The DVD ${this.title} is returned and the remaining copies ${this.copy}.`;      
+    }
 }
 
 //Create child classes Magazine, and extends the base class LibraryItem
@@ -76,7 +113,7 @@ class Magazine extends LibraryItem{
 //create objects for each child class
 let books = new Book("Pette the  Cat", 101, true, "Dr.Seuss", "Fiction");
 let dvds1 = new DVD("DVD read-along: Monsters, Inc", 102, true, "Disney", 60);
-let dvds2 = new DVD("Harry Potter", 103, true, "David Yates", 180, 5); //pass the value 5 for no.of copies which changes the default value 1.
+let dvds2 = new DVD("Harry Potter", 103, true, "David Yates", 180, 2); //pass the value 5 for no.of copies which changes the default value 1.
 let magazines = new Magazine("Readers Digest", 104, false, "Worlkd of Good", "Henry Hurt");
 
 //Book class object "books" calling the baseclass method checkOut and returnItem and child class unique method checkBookAvailability.
@@ -89,10 +126,13 @@ console.log(`${books.checkBookAvailability("Pette the  Cat")}`);
 //DVD class object "dvds1 & dvds2" calling the baseclass method checkOut and returnItem and child class unique method checkDvdCopies.
 console.log(dvds1);
 console.log(dvds2);
-console.log(`${dvds2.checkOut("Harry Potter", 103)}\n\tDirector - ${dvds2.director}`);
-console.log(`${dvds2.returnItem("Harry Potter",103)}\n\tDirector - ${dvds2.director}`);
-console.log(`${dvds2.checkDvdCopies("Harry Potter, Inc")}`); //It modify the default value for copy because value 5 is passed during instantiation of dvds2.
-console.log(`${dvds1.checkDvdCopies("DVD read-along: Monsters, Inc")}`);//It displays the default value for the copy because no value is passed during instantiation of dvds1.
+
+console.log(`${dvds2.checkOut("Harry Potter", 103)}`);
+console.log(`${dvds2.returnDVD("Harry Potter",103)}`);
+console.log(`${dvds2.checkOut("Harry Potter", 103)}`);
+console.log(`${dvds2.checkOut("Harry Potter", 103)}`);
+console.log(`${dvds2.checkOut("Harry Potter", 103)}`);
+console.log(dvds2);
 
 //Magazine class object "magazines" calling the baseclass method checkOut and returnItem and child class unique method checkRating.
 console.log(magazines);
@@ -126,6 +166,7 @@ DVD {
   isAvailable: true,
   director: 'Disney',
   duration: 60,
+  isCopy: true,
   copy: 1
 }
 DVD {
@@ -134,18 +175,23 @@ DVD {
   isAvailable: true,
   director: 'David Yates',
   duration: 180,
-  copy: 5
+  isCopy: true,
+  copy: 2
 }
-Item Checkout details:
-        Title - Harry Potter
-        Id - 103
-        Director - David Yates
-Details of Item Returned:
-        Title - Harry Potter
-        Id - 103
-        Director - David Yates
-The Harry Potter, Inc has 5 copies
-The DVD read-along: Monsters, Inc has 1 copies
+The DVD Harry Potter is checked out and the remaining copy/ies 1.
+The DVD Harry Potter is returned and the remaining copies 2.
+The DVD Harry Potter is checked out and the remaining copy/ies 1.
+The DVD Harry Potter is checked out and the remaining copy/ies 0.
+The DVD Harry Potter is not available.
+DVD {
+  title: 'Harry Potter',
+  id: 103,
+  isAvailable: false,
+  director: 'David Yates',
+  duration: 180,
+  isCopy: false,
+  copy: 0
+}
 Magazine {
   title: 'Readers Digest',
   id: 104,
@@ -154,9 +200,7 @@ Magazine {
   publisher: 'Henry Hurt',
   rating: 5
 }
-Item Checkout details:
-        Title - Readers Digest
-        Id - 104
+The Readers Digest is not avaialble
 Details of Item Returned:
         Title - Readers Digest
         Id - 104
